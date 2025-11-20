@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 import { Calendar, Home, Inbox, Plus, Search, Settings } from "lucide-react";
 
 import {
@@ -10,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ModeToggle } from "./ModeToggle";
 
 // Menu items.
 const items = [
@@ -46,16 +51,19 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const pathname = usePathname();
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Tasks Manager</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex justify-between text-lg  mb-1">
+            Tasks Manager <ModeToggle />
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={item.url === pathname}>
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
