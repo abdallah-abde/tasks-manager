@@ -2,7 +2,14 @@
 
 import { usePathname } from "next/navigation";
 
-import { Calendar, Home, Inbox, Plus, Search, Settings } from "lucide-react";
+import {
+  Calendar,
+  CheckSquare,
+  Inbox,
+  PlusSquare,
+  Search,
+  Settings,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -19,9 +26,9 @@ import { ModeToggle } from "./ModeToggle";
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "My Tasks",
     url: "/",
-    icon: Home,
+    icon: CheckSquare,
   },
   {
     title: "Inbox",
@@ -46,7 +53,7 @@ const items = [
   {
     title: "Add",
     url: "/add-task",
-    icon: Plus,
+    icon: PlusSquare,
   },
 ];
 
