@@ -1,4 +1,4 @@
-import { AddTaskForm } from "@/components/add-task-form";
+import { AddTaskForm } from "@/components/add-task";
 
 export default function page() {
   return <AddTaskForm />;

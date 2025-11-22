@@ -21,7 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ModeToggle } from "./ModeToggle";
+import { ModeToggle } from "./mode-toggle";
 
 // Menu items.
 const items = [
@@ -70,7 +70,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.url === pathname}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.url === pathname}
+                    tooltip={item.title}
+                  >
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
