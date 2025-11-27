@@ -32,7 +32,10 @@ export async function getDailyTaskCounts() {
   const grouped: Record<string, DailyTaskCount> = {};
 
   for (const task of tasks) {
-    const day = startOfDay(task.createdAt).toISOString().split("T")[0]; // yyyy-mm-dd
+    // const day = startOfDay(new Date(task.createdAt))
+    //   .toISOString()
+    //   .split("T")[0]; // yyyy-mm-dd
+    const day = new Date(task.createdAt).toISOString().split("T")[0]; // yyyy-mm-dd
 
     if (!grouped[day]) {
       grouped[day] = {

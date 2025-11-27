@@ -150,8 +150,6 @@ export function TasksChart({ data }: { data: DailyTaskCount[] }) {
 
   const filteredData = data.filter((item) => {
     const date = new Date();
-    console.log("date: ", date);
-    console.log("item.date: ", item.date);
     const referenceDate = new Date();
     let daysToSubtract = 90;
     if (timeRange === "30d") {
@@ -160,15 +158,9 @@ export function TasksChart({ data }: { data: DailyTaskCount[] }) {
       daysToSubtract = 7;
     }
     const startDate = new Date(referenceDate);
-    console.log("startDate: ", startDate);
     startDate.setDate(startDate.getDate() - daysToSubtract);
     return date >= startDate;
   });
-
-  {
-    console.log(filteredData);
-    console.log(data);
-  }
 
   return (
     <Card className="pt-0">

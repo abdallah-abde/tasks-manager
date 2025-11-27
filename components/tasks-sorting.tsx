@@ -63,7 +63,6 @@ export default function TaskSorting() {
   const handleSortFieldClick = useDebouncedCallback(
     (field: string, dir: boolean) => {
       const params = new URLSearchParams(searchParams);
-      // console.log(value);
       params.set("sortField", field);
       params.set("sortDir", dir ? "desc" : "asc");
 
@@ -110,7 +109,6 @@ export default function TaskSorting() {
                         value={item.value}
                         onSelect={(currentValue) => {
                           setValue(currentValue === value ? "" : currentValue);
-                          console.log("current: ", currentValue);
                           setOpen(false);
                           handleSortFieldClick(currentValue, direction);
                         }}
