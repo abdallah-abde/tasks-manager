@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 import {
   Calendar,
+  ChartLine,
   CheckSquare,
   EllipsisVertical,
   Inbox,
@@ -62,11 +63,11 @@ const items = [
   //   url: "#",
   //   icon: Calendar,
   // },
-  // {
-  //   title: "Search",
-  //   url: "#",
-  //   icon: Search,
-  // },
+  {
+    title: "Stats",
+    url: "/stats",
+    icon: ChartLine,
+  },
   {
     title: "Settings",
     url: "/settings",

@@ -24,31 +24,50 @@ import DeleteTask from "@/components/delete-task";
 import EditTask from "@/components/edit-task";
 import { Task } from "@/app/generated/prisma/client";
 import { useSession } from "next-auth/react";
+import TasksPagination from "./tasks-pagination";
+import { ITEMS_PER_PAGE } from "@/data/constants";
 
-export default function TaskList({ initialTasks }: { initialTasks: Task[] }) {
+export default function TaskList({
+  initialTasks,
+  initialTasksCount,
+}: {
+  initialTasks: Task[];
+  initialTasksCount: number;
+}) {
   const { data: session } = useSession();
 
   const searchParams = useSearchParams();
   const [tasks, setTasks] = useState<Task[]>(initialTasks ?? []);
+  const [tasksCount, setTasksCount] = useState<number>(initialTasksCount ?? 0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
+
     const fetchTasks = async () => {
       setLoading(true);
+
       const params = new URLSearchParams(Array.from(searchParams.entries()));
+
       const res = await fetch(`/api/tasks?${params.toString()}`);
+
       if (!res.ok) {
         setLoading(false);
         return;
       }
-      const data = await res.json();
+
+      const { tasks, tasksCount } = await res.json();
+
       if (!mounted) return;
-      setTasks(data);
+
+      setTasks(tasks);
+      setTasksCount(tasksCount);
+
       setLoading(false);
     };
 
     fetchTasks();
+
     return () => {
       mounted = false;
     };
@@ -62,7 +81,7 @@ export default function TaskList({ initialTasks }: { initialTasks: Task[] }) {
     );
   }
 
-  if (tasks.length === 0) {
+  if (tasksCount === 0) {
     return (
       <div className="container mx-auto flex flex-col items-center justify-center">
         <h1 className="text-xl md:text-3xl font-bold my-4">No Tasks Found</h1>
@@ -82,7 +101,7 @@ export default function TaskList({ initialTasks }: { initialTasks: Task[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-4 w-full">
         {tasks.map((task) => {
           const {
             id,
@@ -92,7 +111,6 @@ export default function TaskList({ initialTasks }: { initialTasks: Task[] }) {
             status,
             userName,
             userImage,
-            userEmail,
             createdAt,
           } = task;
 
@@ -182,6 +200,11 @@ export default function TaskList({ initialTasks }: { initialTasks: Task[] }) {
           );
         })}
       </div>
+      {tasksCount / ITEMS_PER_PAGE > 1 && (
+        <div className="border-t p-4">
+          <TasksPagination tasks={tasks} tasksCount={tasksCount} />
+        </div>
+      )}
     </>
   );
 }

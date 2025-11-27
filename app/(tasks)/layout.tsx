@@ -66,7 +66,7 @@ export default async function RootLayout({
                   />
                   {breadcrumb}
                 </div>
-                <div className=" pb-4">
+                <div className="">
                   {/* <SessionProvider session={session}> */}
                   {children}
                   {/* </SessionProvider> */}

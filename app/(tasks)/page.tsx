@@ -1,28 +1,27 @@
 import prisma from "@/lib/prisma";
-import TaskFilters from "@/components/tasks-filters";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import TaskList from "@/components/tasks-list";
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { ITEMS_PER_PAGE } from "@/data/constants";
+import TasksControls from "@/components/tasks-controls";
 
 export default async function Home(props: {
   searchParams?: Promise<{
     priority?: string;
     status?: string;
     query?: string;
+    page?: string;
+    sortField?: string;
+    sortDir?: string;
   }>;
 }) {
-  const session = await auth();
-
-  // if (!session || !session.user) {
-  //   redirect("/sign-in");
-  // }
-
   const sp = (await props.searchParams) ?? {};
   const priority = sp.priority || "ANY";
   const status = sp.status || "ANY";
   const query = sp.query || "";
+  const page = sp.page || "";
+  const sortField = sp.sortField || "createdAt";
+  const sortDir = sp.sortDir || "desc";
 
   const where: Record<string, any> = {};
 
@@ -34,26 +33,34 @@ export default async function Home(props: {
       { description: { contains: query, mode: "insensitive" } },
     ];
 
+  const orderBy: Record<string, any> = {};
+
+  orderBy[sortField] = sortDir === "desc" ? "desc" : "asc";
+
   const tasks = await prisma.task.findMany({
     where,
-    orderBy: { createdAt: "desc" },
+    orderBy,
+    skip: page ? (Number(page) - 1) * ITEMS_PER_PAGE : 0,
+    take: ITEMS_PER_PAGE,
   });
 
+  const tasksCount = await prisma.task.count({ where });
+
   return (
-    <div className="container mx-auto">
-      <div className="flex items-start xl:items-center justify-between flex-col xl:flex-row gap-6 mb-4 border-b pb-4">
+    <div className="mx-auto">
+      <div className="flex items-center xl:items-center justify-between flex-col xl:flex-row gap-3 mb-4 border-b pb-4 relative">
         <div className="flex items-center gap-0.5 self-center min-w-40">
           <h1 className="text-2xl font-bold pl-4">My Tasks</h1>
-          {tasks.length > 0 && (
+          {tasksCount > 0 && (
             <Badge className="self-start text-[10px]" variant={"secondary"}>
-              {tasks.length}
+              {tasksCount}
             </Badge>
           )}
         </div>
-        <TaskFilters />
+        <TasksControls />
       </div>
       <>
-        {tasks.length === 0 ? (
+        {tasksCount === 0 ? (
           <div className="container mx-auto flex flex-col items-center justify-center">
             <h1 className="text-xl md:text-3xl font-bold my-4">
               No Tasks Found
@@ -70,13 +77,10 @@ export default async function Home(props: {
             />
           </div>
         ) : (
-          <TaskList initialTasks={tasks} />
+          <TaskList initialTasks={tasks} initialTasksCount={tasksCount} />
         )}
       </>
 
-      {/* TODO: CHART */}
-      {/* TODO: SORTING */}
-      {/* TODO: PAGINATION */}
       {/* TODO: FILTER BY DATE */}
       {/* TODO: SETTINGS (items per page) |  */}
     </div>
