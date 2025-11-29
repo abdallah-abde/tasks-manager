@@ -26,6 +26,7 @@ import { Task } from "@/app/generated/prisma/client";
 import { useSession } from "next-auth/react";
 import TasksPagination from "./tasks-pagination";
 import { ITEMS_PER_PAGE } from "@/data/constants";
+import { headers } from "next/headers";
 
 export default function TaskList({
   initialTasks,
@@ -49,7 +50,12 @@ export default function TaskList({
 
       const params = new URLSearchParams(Array.from(searchParams.entries()));
 
-      const res = await fetch(`/api/tasks?${params.toString()}`);
+      const res = await fetch(`/api/tasks?${params.toString()}`, {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+        cache: "no-store",
+      });
 
       if (!res.ok) {
         setLoading(false);
