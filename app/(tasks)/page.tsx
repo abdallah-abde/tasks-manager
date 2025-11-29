@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 import prisma from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";

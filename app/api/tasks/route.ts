@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { ITEMS_PER_PAGE } from "@/data/constants";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
