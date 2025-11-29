@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import z from "zod";
 import { updateTask } from "@/actions/task.actions";
+import { useRouter } from "next/navigation";
 
 export default function EditTask({
   id,
@@ -55,6 +56,8 @@ export default function EditTask({
       userEmail: task.userEmail,
     },
   });
+
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -66,6 +69,7 @@ export default function EditTask({
         toast.success("Task updated successfully");
         // close the drawer after successful update
         setOpen(false);
+        router.refresh();
       } else {
         toast.error("Failed to create task");
       }
