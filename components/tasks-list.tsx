@@ -51,9 +51,9 @@ export default function TaskList({
       const params = new URLSearchParams(Array.from(searchParams.entries()));
 
       const res = await fetch(`/api/tasks?${params.toString()}`, {
-        headers: {
-          "Cache-Control": "no-store",
-        },
+        // headers: {
+        //   "Cache-Control": "no-store",
+        // },
         cache: "no-store",
       });
 
