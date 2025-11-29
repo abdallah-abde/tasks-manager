@@ -69,7 +69,7 @@ export default function EditTask({
         toast.success("Task updated successfully");
         // close the drawer after successful update
         setOpen(false);
-        router.refresh();
+        router.push("/");
       } else {
         toast.error("Failed to create task");
       }
