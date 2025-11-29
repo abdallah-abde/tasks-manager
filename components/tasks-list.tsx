@@ -26,7 +26,7 @@ import { Task } from "@/app/generated/prisma/client";
 import { useSession } from "next-auth/react";
 import TasksPagination from "./tasks-pagination";
 import { ITEMS_PER_PAGE } from "@/data/constants";
-import { headers } from "next/headers";
+// import { headers } from "next/headers";
 
 export default function TaskList({
   initialTasks,
