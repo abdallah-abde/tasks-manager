@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { subDays, startOfDay } from "date-fns";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -149,17 +150,16 @@ export function TasksChart({ data }: { data: DailyTaskCount[] }) {
   const [timeRange, setTimeRange] = React.useState("90d");
 
   const filteredData = data.filter((item) => {
-    const date = new Date();
-    const referenceDate = new Date();
+    const itemDate = startOfDay(new Date(item.date));
     let daysToSubtract = 90;
     if (timeRange === "30d") {
       daysToSubtract = 30;
     } else if (timeRange === "7d") {
       daysToSubtract = 7;
     }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
+
+    const startDate = startOfDay(subDays(new Date(), daysToSubtract));
+    return itemDate >= startDate;
   });
 
   return (
@@ -168,10 +168,15 @@ export function TasksChart({ data }: { data: DailyTaskCount[] }) {
         <div className="grid flex-1 gap-1">
           <CardTitle>Stats</CardTitle>
           <CardDescription>
-            Showing total tasks for the last 3 months
+            Showing total tasks for the last{" "}
+            {timeRange === "90d"
+              ? "3 months"
+              : timeRange === "30d"
+                ? "30 days"
+                : "7 days"}
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="hidden w-40 rounded-lg sm:ml-auto sm:flex"
             aria-label="Select a value"
@@ -189,14 +194,14 @@ export function TasksChart({ data }: { data: DailyTaskCount[] }) {
               Last 7 days
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={filteredData}>
+          <AreaChart data={data}>
             <defs>
               <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
                 <stop

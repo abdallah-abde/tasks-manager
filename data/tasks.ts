@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { subMonths, startOfDay } from "date-fns";
+import { eachDayOfInterval, startOfDay, subMonths } from "date-fns";
 
 export const getTasksCount = async () => {
   const count = await prisma.task.count();
@@ -16,26 +16,32 @@ export type DailyTaskCount = {
 
 export async function getDailyTaskCounts() {
   // 1. Get tasks from the last 3 months
+  const from = startOfDay(subMonths(new Date(), 3));
+
   const tasks = await prisma.task.findMany({
-    where: {
-      createdAt: {
-        gte: subMonths(new Date(), 3),
-      },
-    },
+    // where: {
+    //   createdAt: {
+    //     gte: from,
+    //   },
+    // },
     select: {
       createdAt: true,
       status: true,
     },
   });
 
+  console.log(tasks);
+
+  console.log(new Date());
+  console.log(from);
+
   // 2. Group by day
   const grouped: Record<string, DailyTaskCount> = {};
 
   for (const task of tasks) {
-    // const day = startOfDay(new Date(task.createdAt))
-    //   .toISOString()
-    //   .split("T")[0]; // yyyy-mm-dd
-    const day = new Date(task.createdAt).toISOString().split("T")[0]; // yyyy-mm-dd
+    const day = startOfDay(new Date(task.createdAt))
+      .toISOString()
+      .split("T")[0]; // yyyy-mm-dd
 
     if (!grouped[day]) {
       grouped[day] = {
@@ -53,6 +59,10 @@ export async function getDailyTaskCounts() {
 
     grouped[day].total++;
   }
+
+  console.log(
+    Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date)),
+  );
 
   // 3. Convert to array sorted by date
   return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
